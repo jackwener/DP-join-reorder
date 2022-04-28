@@ -1,10 +1,13 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.URL;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class DpCcp {
     ArrayList<Integer> vertexToLabel;
     ArrayList<Integer> labelToVertex;
-    int neighbor[] = new int[1 << 15];
+    int[] neighbor = new int[1 << 15];
 
     void bfsAddLabel(int n, ArrayList<List<Integer>> edges) {
         Queue<Integer> queue = new LinkedList<>();
@@ -116,23 +119,35 @@ public class DpCcp {
         }
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, FileNotFoundException, NumberFormatException {
         DpCcp dpCcp = new DpCcp();
-        int n = 8;
+
+        URL path = DpCcp.class.getResource("edges");
+        assert path != null;
+        File file = new File(path.getFile());
+        Scanner reader = new Scanner(file);
+        String firstLine = reader.nextLine();
+        String[] s = firstLine.split("\\s+");
+        int n = Integer.parseInt(s[0]);
 
         ArrayList<List<Integer>> edges = new ArrayList<>();
-        edges.add(Arrays.asList(1));
-        edges.add(Arrays.asList(0, 2));
-        edges.add(Arrays.asList(1, 3));
-        edges.add(Arrays.asList(2, 4));
-        edges.add(Arrays.asList(3, 5));
-        edges.add(Arrays.asList(4, 6));
-        edges.add(Arrays.asList(5, 7));
-        edges.add(Arrays.asList(6));
+        for (int i = 0; i < n; i++) {
+            edges.add(new ArrayList<>());
+        }
+
+        while (reader.hasNextLine()) {
+            String data = reader.nextLine();
+            String[] line = data.split("\\s+");
+            System.out.println(Arrays.toString(line));
+            assert line.length == 2;
+            int src = Integer.parseInt(line[0]);
+            int dst = Integer.parseInt(line[1]);
+            edges.get(src).add(dst);
+        }
 
         double startMillis = System.currentTimeMillis();
 
-        dpCcp.bfsAddLabel(8, edges);
+        dpCcp.bfsAddLabel(n, edges);
 
         int totCnt = 0;
         Arrays.fill(dpCcp.neighbor, -1);

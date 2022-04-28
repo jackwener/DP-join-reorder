@@ -1,6 +1,12 @@
 import javafx.util.Pair;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 public class DpSub {
@@ -23,29 +29,30 @@ public class DpSub {
         }
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, FileNotFoundException {
         DpSub DpSub = new DpSub();
 
-        int n = 8;
+        URL path = DpCcp.class.getResource("edges");
+        assert path != null;
+        File file = new File(path.getFile());
+        Scanner reader = new Scanner(file);
+        String firstLine = reader.nextLine();
+        String[] s = firstLine.split("\\s+");
+        int n = Integer.parseInt(s[0]);
+
         ArrayList<Integer> dp = new ArrayList<>(1 << n);
         fill(dp, 1 << n, -1);
-//        ArrayList<List<Integer>> edges = new ArrayList<>();
-//        edges.add(Arrays.asList(1));
-//        edges.add(Arrays.asList(0, 2));
-//        edges.add(Arrays.asList(1, 3));
-//        edges.add(Arrays.asList(2, 4));
-//        edges.add(Arrays.asList(3, 5));
-//        edges.add(Arrays.asList(4, 6));
-//        edges.add(Arrays.asList(5, 7));
-//        edges.add(Arrays.asList(6));
+
         ArrayList<Pair<Integer, Integer>> allEdges = new ArrayList<>();
-        allEdges.add(new Pair<>(0, 1));
-        allEdges.add(new Pair<>(1, 2));
-        allEdges.add(new Pair<>(2, 3));
-        allEdges.add(new Pair<>(3, 4));
-        allEdges.add(new Pair<>(4, 5));
-        allEdges.add(new Pair<>(5, 6));
-        allEdges.add(new Pair<>(6, 7));
+        while (reader.hasNextLine()) {
+            String data = reader.nextLine();
+            String[] line = data.split("\\s+");
+            System.out.println(Arrays.toString(line));
+            assert line.length == 2;
+            int src = Integer.parseInt(line[0]);
+            int dst = Integer.parseInt(line[1]);
+            allEdges.add(new Pair<>(src, dst));
+        }
 
         for (int i = 0; i < n; ++i) {
             dp.set(1 << i, 0);
